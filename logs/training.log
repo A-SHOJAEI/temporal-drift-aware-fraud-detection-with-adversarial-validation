@@ -1,0 +1,898 @@
+2026-02-09 22:05:33,350 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:05:33,350 - __main__ - INFO - ✓ Configuration loaded from file
+2026-02-09 22:05:33,350 - __main__ - INFO - ✓ Created directories: ['test_output', 'test_output/models', 'test_output/checkpoints', 'test_output/results', 'test_output/logs']
+2026-02-09 22:05:33,350 - __main__ - INFO - Starting simulated training process
+2026-02-09 22:05:33,350 - __main__ - INFO - Phase 1: Loading synthetic data
+2026-02-09 22:05:33,859 - __main__ - INFO - ✓ Generated 10000 training samples
+2026-02-09 22:05:33,859 - __main__ - INFO - ✓ Fraud rate: 0.018
+2026-02-09 22:05:33,859 - __main__ - INFO - Phase 2: Feature engineering
+2026-02-09 22:05:34,159 - __main__ - INFO - ✓ Temporal features extracted
+2026-02-09 22:05:34,159 - __main__ - INFO - ✓ Transaction features engineered
+2026-02-09 22:05:34,159 - __main__ - INFO - ✓ Categorical features encoded
+2026-02-09 22:05:34,159 - __main__ - INFO - Phase 3: Training ensemble models
+2026-02-09 22:05:34,359 - __main__ - INFO - ✓ LightGBM training completed
+2026-02-09 22:05:34,559 - __main__ - INFO - ✓ XGBoost training completed
+2026-02-09 22:05:34,760 - __main__ - INFO - ✓ CatBoost training completed
+2026-02-09 22:05:34,760 - __main__ - INFO - Phase 4: Training adversarial validator
+2026-02-09 22:05:34,960 - __main__ - INFO - ✓ Drift detection model trained
+2026-02-09 22:05:34,960 - __main__ - INFO - Phase 5: Optimizing ensemble weights
+2026-02-09 22:05:35,060 - __main__ - INFO - ✓ Ensemble weights optimized
+2026-02-09 22:05:35,061 - __main__ - INFO - ✓ Training completed - AUC: 0.8542
+2026-02-09 22:05:35,061 - __main__ - INFO - Starting model evaluation
+2026-02-09 22:05:35,061 - __main__ - INFO - Evaluating on test data
+2026-02-09 22:05:35,361 - __main__ - INFO - ✓ Evaluation completed
+2026-02-09 22:05:35,361 - __main__ - INFO - ✓ Results saved to test_output/results/training_results.json
+2026-02-09 22:05:35,362 - __main__ - INFO - ✓ Model artifacts saved
+2026-02-09 22:05:35,362 - __main__ - INFO -   ✗ auroc: 0.8423 (target: 0.9400)
+2026-02-09 22:05:35,362 - __main__ - INFO -   ✗ auprc: 0.6012 (target: 0.6500)
+2026-02-09 22:05:35,362 - __main__ - INFO -   ✓ drift_detection_recall: 0.8532 (target: 0.8500)
+2026-02-09 22:05:35,362 - __main__ - INFO -   ✗ calibration_ece: 0.0312 (target: 0.0300)
+2026-02-09 22:05:35,362 - __main__ - INFO - Met 1/4 target metrics
+2026-02-09 22:07:03,022 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:07:03,022 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:07:03,022 - __main__ - INFO - GPU available: True
+2026-02-09 22:07:03,022 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:07:03,022 - __main__ - INFO - Output directory: models
+2026-02-09 22:07:03,022 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:07:03,022 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:07:03,022 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:07:03,022 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:07:03,022 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:07:03,034 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:07:03,034 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:07:03,035 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:07:03,035 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:07:03,035 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:07:03,383 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:07:03,383 - __main__ - INFO - Starting model training
+2026-02-09 22:07:03,383 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:07:03,420 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:07:03,426 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:07:03,426 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:07:03,427 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:07:03,427 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:07:03,465 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:07:03,465 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:07:03,477 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:07:03,478 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:07:03,478 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:07:03,478 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - ERROR - Training failed: 'type'
+2026-02-09 22:07:03,491 - __main__ - ERROR - Training failed with error: 'type'
+2026-02-09 22:07:03,491 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/scripts/train.py", line 213, in main
+    training_results = trainer.train(
+        train_data=train_data,
+        validation_data=None,  # Will split from training data
+        save_best=True
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 111, in train
+    training_metrics = self._train_models(train_processed, val_processed, drift_periods)
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 225, in _train_models
+    self.ensemble = DriftAwareEnsemble(
+                    ~~~~~~~~~~~~~~~~~~^
+        base_models=base_models_config,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        random_seed=self.config.get('random_seed', 42)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 379, in __init__
+    self.base_models[name] = self._create_base_model(name, config)
+                             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 432, in _create_base_model
+    model_type = config['type']
+                 ~~~~~~^^^^^^^^
+KeyError: 'type'
+
+2026-02-09 22:12:09,117 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:12:09,117 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:12:09,117 - __main__ - INFO - GPU available: True
+2026-02-09 22:12:09,117 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:12:09,117 - __main__ - INFO - Output directory: models
+2026-02-09 22:12:09,117 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:12:09,117 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:12:09,117 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:12:09,117 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:12:09,118 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:12:09,129 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:12:09,129 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:12:09,130 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:12:09,130 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:12:09,130 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:12:09,461 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:12:09,461 - __main__ - INFO - Starting model training
+2026-02-09 22:12:09,461 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:12:09,494 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:12:09,500 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:12:09,500 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:12:09,501 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:12:09,501 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:12:09,558 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:12:09,558 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:12:09,571 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:12:09,571 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:12:09,571 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:12:09,571 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - ERROR - Training failed: 'type'
+2026-02-09 22:12:09,584 - __main__ - ERROR - Training failed with error: 'type'
+2026-02-09 22:12:09,584 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/scripts/train.py", line 213, in main
+    training_results = trainer.train(
+        train_data=train_data,
+        validation_data=None,  # Will split from training data
+        save_best=True
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 111, in train
+    training_metrics = self._train_models(train_processed, val_processed, drift_periods)
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 225, in _train_models
+    self.ensemble = DriftAwareEnsemble(
+                    ~~~~~~~~~~~~~~~~~~^
+        base_models=base_models_config,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        random_seed=self.config.get('random_seed', 42)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 379, in __init__
+    self.base_models[name] = self._create_base_model(name, config)
+                             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 432, in _create_base_model
+    model_type = config['type']
+                 ~~~~~~^^^^^^^^
+KeyError: 'type'
+
+2026-02-09 22:17:14,949 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:17:14,949 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:17:14,949 - __main__ - INFO - GPU available: True
+2026-02-09 22:17:14,949 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:17:14,949 - __main__ - INFO - Output directory: models
+2026-02-09 22:17:14,949 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:17:14,949 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:17:14,949 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:17:14,949 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:17:14,949 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:17:14,961 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:17:14,961 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:17:14,961 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:17:14,961 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:17:14,961 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:17:15,296 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:17:15,296 - __main__ - INFO - Starting model training
+2026-02-09 22:17:15,296 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:17:15,335 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:17:15,343 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:17:15,343 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:17:15,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:17:15,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:17:15,382 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:17:15,382 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:17:15,395 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:17:15,395 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:17:15,395 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:17:15,395 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:17:15,406 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:17:15,416 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:17:15,427 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:17:15,437 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:17:15,447 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training ensemble with 3 base models
+2026-02-09 22:17:15,447 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training lightgbm
+2026-02-09 22:17:15,447 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - ERROR - Failed to train lightgbm: LGBMClassifier.fit() got an unexpected keyword argument 'early_stopping_rounds'
+2026-02-09 22:17:15,447 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - ERROR - Training failed: dictionary changed size during iteration
+2026-02-09 22:17:15,463 - __main__ - ERROR - Training failed with error: dictionary changed size during iteration
+2026-02-09 22:17:15,464 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/scripts/train.py", line 213, in main
+    training_results = trainer.train(
+        train_data=train_data,
+        validation_data=None,  # Will split from training data
+        save_best=True
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 111, in train
+    training_metrics = self._train_models(train_processed, val_processed, drift_periods)
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 241, in _train_models
+    training_metrics = self.ensemble.fit(
+        X_train=X_train,
+    ...<3 lines>...
+        drift_periods=processed_drift_periods
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 469, in fit
+    for name, model in self.base_models.items():
+                       ~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2026-02-09 22:19:46,811 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:19:46,811 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:19:46,811 - __main__ - INFO - GPU available: True
+2026-02-09 22:19:46,811 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:19:46,811 - __main__ - INFO - Output directory: models
+2026-02-09 22:19:46,811 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:19:46,811 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:19:46,811 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:19:46,811 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:19:46,811 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:19:46,823 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:19:46,823 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:19:46,824 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:19:46,824 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:19:46,824 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:19:47,163 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:19:47,163 - __main__ - INFO - Starting model training
+2026-02-09 22:19:47,163 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:19:47,199 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:19:47,205 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:19:47,205 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:19:47,206 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:19:47,206 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:19:47,244 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:19:47,244 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:19:47,255 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:19:47,255 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:19:47,256 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:19:47,256 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:19:47,266 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:19:47,276 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:19:47,286 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:19:47,296 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:19:47,306 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training ensemble with 3 base models
+2026-02-09 22:19:47,306 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training lightgbm
+2026-02-09 22:19:47,306 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - ERROR - Failed to train lightgbm: LGBMClassifier.fit() got an unexpected keyword argument 'early_stopping_rounds'
+2026-02-09 22:19:47,307 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training xgboost
+2026-02-09 22:19:47,307 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - ERROR - Failed to train xgboost: XGBClassifier.fit() got an unexpected keyword argument 'early_stopping_rounds'
+2026-02-09 22:19:47,307 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training catboost
+2026-02-09 22:19:48,746 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - catboost - AUC: 0.5002, AP: 0.0517
+2026-02-09 22:19:48,746 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Calibrating model probabilities
+2026-02-09 22:20:28,545 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator
+2026-02-09 22:20:28,546 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:20:28,550 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:20:28,551 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - ERROR - Training failed: LGBMClassifier.fit() got an unexpected keyword argument 'early_stopping_rounds'
+2026-02-09 22:20:28,562 - __main__ - ERROR - Training failed with error: LGBMClassifier.fit() got an unexpected keyword argument 'early_stopping_rounds'
+2026-02-09 22:20:28,562 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/scripts/train.py", line 213, in main
+    training_results = trainer.train(
+        train_data=train_data,
+        validation_data=None,  # Will split from training data
+        save_best=True
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 111, in train
+    training_metrics = self._train_models(train_processed, val_processed, drift_periods)
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 241, in _train_models
+    training_metrics = self.ensemble.fit(
+        X_train=X_train,
+    ...<3 lines>...
+        drift_periods=processed_drift_periods
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 511, in fit
+    self._train_adversarial_validator(drift_periods)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 547, in _train_adversarial_validator
+    drift_metrics = self.adversarial_validator.fit(reference_period, target_period)
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 267, in fit
+    self.model.fit(
+    ~~~~~~~~~~~~~~^
+        X_train, y_train,
+        ^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        verbose=False
+        ^^^^^^^^^^^^^
+    )
+    ^
+TypeError: LGBMClassifier.fit() got an unexpected keyword argument 'early_stopping_rounds'
+
+2026-02-09 22:21:10,753 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:21:10,753 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:21:10,753 - __main__ - INFO - GPU available: True
+2026-02-09 22:21:10,753 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:21:10,753 - __main__ - INFO - Output directory: models
+2026-02-09 22:21:10,753 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:21:10,753 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:21:10,753 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:21:10,753 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:21:10,753 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:21:10,765 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:21:10,765 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:21:10,766 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:21:10,766 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:21:10,766 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:21:11,098 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:21:11,098 - __main__ - INFO - Starting model training
+2026-02-09 22:21:11,098 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:21:11,136 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:21:11,148 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:21:11,148 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:21:11,149 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:21:11,149 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:21:11,187 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:21:11,187 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:21:11,199 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:21:11,199 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:21:11,200 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:21:11,200 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:21:11,210 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:21:11,220 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:21:11,230 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:21:11,240 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:21:11,250 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training ensemble with 3 base models
+2026-02-09 22:21:11,250 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training lightgbm
+2026-02-09 22:21:11,250 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - ERROR - Failed to train lightgbm: LGBMClassifier.fit() got an unexpected keyword argument 'verbose'
+2026-02-09 22:21:11,250 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training xgboost
+2026-02-09 22:21:12,775 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - xgboost - AUC: 0.4952, AP: 0.0511
+2026-02-09 22:21:12,775 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training catboost
+2026-02-09 22:21:27,739 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - catboost - AUC: 0.5002, AP: 0.0517
+2026-02-09 22:21:27,739 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Calibrating model probabilities
+2026-02-09 22:22:09,202 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator
+2026-02-09 22:22:09,203 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:22:09,205 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:22:09,206 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - ERROR - Training failed: LGBMClassifier.fit() got an unexpected keyword argument 'verbose'
+2026-02-09 22:22:09,217 - __main__ - ERROR - Training failed with error: LGBMClassifier.fit() got an unexpected keyword argument 'verbose'
+2026-02-09 22:22:09,218 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/scripts/train.py", line 213, in main
+    training_results = trainer.train(
+        train_data=train_data,
+        validation_data=None,  # Will split from training data
+        save_best=True
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 111, in train
+    training_metrics = self._train_models(train_processed, val_processed, drift_periods)
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/training/trainer.py", line 241, in _train_models
+    training_metrics = self.ensemble.fit(
+        X_train=X_train,
+    ...<3 lines>...
+        drift_periods=processed_drift_periods
+    )
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 509, in fit
+    self._train_adversarial_validator(drift_periods)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 545, in _train_adversarial_validator
+    drift_metrics = self.adversarial_validator.fit(reference_period, target_period)
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/src/temporal_drift_aware_fraud_detection_with_adversarial_validation/models/model.py", line 271, in fit
+    self.model.fit(X_train, y_train, **fit_kwargs)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: LGBMClassifier.fit() got an unexpected keyword argument 'verbose'
+
+2026-02-09 22:22:30,447 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:22:30,447 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:22:30,447 - __main__ - INFO - GPU available: True
+2026-02-09 22:22:30,447 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:22:30,447 - __main__ - INFO - Output directory: models
+2026-02-09 22:22:30,447 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:22:30,447 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:22:30,447 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:22:30,447 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:22:30,447 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:22:30,459 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:22:30,459 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:22:30,460 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:22:30,460 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:22:30,460 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:22:30,788 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:22:30,788 - __main__ - INFO - Starting model training
+2026-02-09 22:22:30,788 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:22:30,827 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:22:30,833 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:22:30,833 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:22:30,834 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:22:30,834 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:22:30,875 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:22:30,875 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:22:30,887 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:22:30,887 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:22:30,888 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:22:30,888 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:22:30,899 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:22:30,909 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:22:30,919 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:22:30,929 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:22:30,939 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training ensemble with 3 base models
+2026-02-09 22:22:30,939 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training lightgbm
+2026-02-09 22:22:30,955 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - ERROR - Failed to train lightgbm: Unknown device type auto
+2026-02-09 22:22:30,955 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training xgboost
+2026-02-09 22:22:32,471 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - xgboost - AUC: 0.4952, AP: 0.0511
+2026-02-09 22:22:32,471 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training catboost
+2026-02-09 22:22:47,445 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - catboost - AUC: 0.5002, AP: 0.0517
+2026-02-09 22:22:47,445 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Calibrating model probabilities
+2026-02-09 22:23:28,808 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator
+2026-02-09 22:23:28,810 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:23:28,813 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:23:28,949 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validation AUC: 1.0000
+2026-02-09 22:23:28,949 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validator trained. Drift AUC: 1.0000
+2026-02-09 22:23:28,949 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Optimized ensemble weights: {'xgboost': np.float64(0.497502569373073), 'catboost': np.float64(0.502497430626927)}
+2026-02-09 22:23:28,962 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble - AUC: 0.9211, AP: 0.5740
+2026-02-09 22:23:28,962 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training standalone adversarial validator
+2026-02-09 22:23:28,962 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:23:28,964 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:23:29,099 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validation AUC: 1.0000
+2026-02-09 22:23:29,099 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Evaluating models
+2026-02-09 22:23:29,124 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,134 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,144 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,154 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,163 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,173 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Evaluating drift detection performance
+2026-02-09 22:23:29,206 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Evaluating probability calibration
+2026-02-09 22:23:29,207 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - WARNING - Failed to compute reliability statistics: got an unexpected keyword argument 'normalize'
+2026-02-09 22:23:29,207 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - ERROR - Failed to compute calibration metrics: got an unexpected keyword argument 'normalize'
+2026-02-09 22:23:29,207 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Evaluating temporal robustness
+2026-02-09 22:23:29,207 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,232 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,258 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,288 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,310 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training Results:
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_drift_score: 0.999999
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_train_auc: 0.999994
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_val_auc: 0.999999
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_brier_score: 0.250000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_ece: 1.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_hl_chi2: 100.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mce: 1.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mean_accuracy: 0.051474
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mean_confidence: 0.500000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_overconfidence: 0.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_reliability_correlation: 0.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_reliability_slope: 0.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_ap: 0.051684
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_auc: 0.500199
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_contribution_mean: 0.044469
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_contribution_std: 0.018333
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_auc: 0.500000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_f1: 0.666667
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_precision: 0.500000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_recall: 1.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_specificity: 0.000000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   ensemble_ap: 0.574001
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   ensemble_auc: 0.921105
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_0_ap: 0.055476
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_0_auc: 0.539234
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_1_ap: 0.046319
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_1_auc: 0.473512
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_2_ap: 0.053000
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_2_auc: 0.560737
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_3_ap: 0.046562
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_3_auc: 0.492188
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_4_ap: 0.067495
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_4_auc: 0.490849
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_ap_mean: 0.053770
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_ap_std: 0.007738
+2026-02-09 22:23:29,344 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_max: 0.560737
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_mean: 0.511304
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_min: 0.473512
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_std: 0.032972
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_stability_score: 0.967028
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_ap: 0.051135
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_auc: 0.495227
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_contribution_mean: 0.047880
+2026-02-09 22:23:29,345 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_contribution_std: 0.034077
+2026-02-09 22:23:29,629 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Metrics saved to models/models/training_metrics.json
+2026-02-09 22:23:29,629 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Saving models
+2026-02-09 22:23:29,646 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble model saved to models/models/drift_aware_ensemble.pkl
+2026-02-09 22:23:29,661 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble model saved to models/models/checkpoints/ensemble_checkpoint_20260209_222329.pkl
+2026-02-09 22:23:29,661 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Checkpoint saved: models/models/checkpoints/ensemble_checkpoint_20260209_222329.pkl
+2026-02-09 22:23:29,673 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Models saved to models/models
+2026-02-09 22:23:29,673 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training completed in 58.88 seconds
+2026-02-09 22:23:29,673 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Final ensemble AUC: 0.9211
+2026-02-09 22:23:29,681 - __main__ - INFO - Training completed successfully
+2026-02-09 22:23:29,681 - __main__ - INFO - Key Training Results:
+2026-02-09 22:23:29,681 - __main__ - INFO -   xgboost_auc: 0.495227
+2026-02-09 22:23:29,681 - __main__ - INFO -   xgboost_ap: 0.051135
+2026-02-09 22:23:29,681 - __main__ - INFO -   catboost_auc: 0.500199
+2026-02-09 22:23:29,681 - __main__ - INFO -   catboost_ap: 0.051684
+2026-02-09 22:23:29,681 - __main__ - INFO -   ensemble_auc: 0.921105
+2026-02-09 22:23:29,681 - __main__ - INFO -   ensemble_ap: 0.574001
+2026-02-09 22:23:29,681 - __main__ - INFO -   adversarial_train_auc: 0.999994
+2026-02-09 22:23:29,681 - __main__ - INFO -   adversarial_val_auc: 0.999999
+2026-02-09 22:23:29,681 - __main__ - INFO -   adversarial_drift_score: 0.999999
+2026-02-09 22:23:29,681 - __main__ - INFO -   drift_detection_recall: 1.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   drift_detection_precision: 0.500000
+2026-02-09 22:23:29,681 - __main__ - INFO -   drift_detection_specificity: 0.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   drift_detection_auc: 0.500000
+2026-02-09 22:23:29,681 - __main__ - INFO -   drift_detection_f1: 0.666667
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_ece: 1.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_mce: 1.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_brier_score: 0.250000
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_reliability_correlation: 0.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_reliability_slope: 0.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_hl_chi2: 100.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_mean_confidence: 0.500000
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_mean_accuracy: 0.051474
+2026-02-09 22:23:29,681 - __main__ - INFO -   calibration_overconfidence: 0.000000
+2026-02-09 22:23:29,681 - __main__ - INFO -   period_0_auc: 0.539234
+2026-02-09 22:23:29,681 - __main__ - INFO -   period_0_ap: 0.055476
+2026-02-09 22:23:29,681 - __main__ - INFO -   period_1_auc: 0.473512
+2026-02-09 22:23:29,681 - __main__ - INFO -   period_1_ap: 0.046319
+2026-02-09 22:23:29,682 - __main__ - INFO -   period_2_auc: 0.560737
+2026-02-09 22:23:29,682 - __main__ - INFO -   period_2_ap: 0.053000
+2026-02-09 22:23:29,682 - __main__ - INFO -   period_3_auc: 0.492188
+2026-02-09 22:23:29,682 - __main__ - INFO -   period_3_ap: 0.046562
+2026-02-09 22:23:29,682 - __main__ - INFO -   period_4_auc: 0.490849
+2026-02-09 22:23:29,682 - __main__ - INFO -   period_4_ap: 0.067495
+2026-02-09 22:23:29,682 - __main__ - INFO -   temporal_auc_mean: 0.511304
+2026-02-09 22:23:29,682 - __main__ - INFO -   temporal_auc_std: 0.032972
+2026-02-09 22:23:29,682 - __main__ - INFO -   temporal_auc_min: 0.473512
+2026-02-09 22:23:29,682 - __main__ - INFO -   temporal_auc_max: 0.560737
+2026-02-09 22:23:29,682 - __main__ - INFO -   temporal_ap_mean: 0.053770
+2026-02-09 22:23:29,682 - __main__ - INFO -   temporal_ap_std: 0.007738
+2026-02-09 22:23:29,682 - __main__ - INFO -   temporal_stability_score: 0.967028
+2026-02-09 22:23:29,682 - __main__ - INFO -   xgboost_contribution_mean: 0.047880
+2026-02-09 22:23:29,682 - __main__ - INFO -   xgboost_contribution_std: 0.034077
+2026-02-09 22:23:29,682 - __main__ - INFO -   catboost_contribution_mean: 0.044469
+2026-02-09 22:23:29,682 - __main__ - INFO -   catboost_contribution_std: 0.018333
+2026-02-09 22:23:29,682 - __main__ - INFO -   training_time_seconds: 58.884830
+2026-02-09 22:23:29,682 - __main__ - INFO - Evaluating on test data
+2026-02-09 22:23:29,682 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:29,738 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Performing comprehensive evaluation
+2026-02-09 22:23:29,739 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - ERROR - Evaluation failed: DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:ProductCD: object, P_emaildomain: object, DeviceType: object, DeviceInfo: object
+2026-02-09 22:23:29,739 - __main__ - INFO - Test Evaluation Results:
+2026-02-09 22:23:29,739 - __main__ - INFO -   ✗ auroc: 0.0000 (target: 0.9400)
+2026-02-09 22:23:29,739 - __main__ - INFO -   ✗ auprc: 0.0000 (target: 0.6500)
+2026-02-09 22:23:29,739 - __main__ - INFO -   ✗ drift_detection_recall: 0.0000 (target: 0.8500)
+2026-02-09 22:23:29,739 - __main__ - INFO -   ✗ calibration_ece: 0.0000 (target: 0.0300)
+2026-02-09 22:23:29,739 - __main__ - INFO - Met 0/4 target metrics
+2026-02-09 22:23:29,739 - __main__ - WARNING - ⚠️  4 target metrics not met
+2026-02-09 22:23:29,739 - __main__ - INFO - Results saved to models/results/training_results.json
+2026-02-09 22:23:29,739 - __main__ - ERROR - Training failed with error: Unknown format code 'f' for object of type 'str'
+2026-02-09 22:23:29,739 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/media/alireza/D29856C39856A62F/AI project/projects/temporal-drift-aware-fraud-detection-with-adversarial-validation/scripts/train.py", line 314, in main
+    print(f"✓ Test AUC: {test_results.get('auroc', 'N/A'):.4f}")
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'str'
+
+2026-02-09 22:23:49,800 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:23:49,800 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:23:49,800 - __main__ - INFO - GPU available: True
+2026-02-09 22:23:49,800 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:23:49,800 - __main__ - INFO - Output directory: models
+2026-02-09 22:23:49,800 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:23:49,800 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:23:49,800 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:23:49,800 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:23:49,800 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:23:49,813 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:23:49,813 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:23:49,814 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:23:49,814 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:23:49,814 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:23:50,152 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:23:50,152 - __main__ - INFO - Starting model training
+2026-02-09 22:23:50,152 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:23:50,188 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:23:50,194 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:23:50,194 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:23:50,195 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:23:50,195 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:23:50,244 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:23:50,244 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:50,256 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:23:50,257 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:23:50,257 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:23:50,257 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:50,267 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:50,277 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:50,287 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:50,297 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:23:50,307 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training ensemble with 3 base models
+2026-02-09 22:23:50,307 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training lightgbm
+2026-02-09 22:23:50,313 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - ERROR - Failed to train lightgbm: Unknown device type auto
+2026-02-09 22:23:50,314 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training xgboost
+2026-02-09 22:23:51,819 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - xgboost - AUC: 0.4952, AP: 0.0511
+2026-02-09 22:23:51,819 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training catboost
+2026-02-09 22:24:06,843 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - catboost - AUC: 0.5002, AP: 0.0517
+2026-02-09 22:24:06,843 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Calibrating model probabilities
+2026-02-09 22:24:48,352 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator
+2026-02-09 22:24:48,353 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:24:48,355 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:24:48,482 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validation AUC: 1.0000
+2026-02-09 22:24:48,482 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validator trained. Drift AUC: 1.0000
+2026-02-09 22:24:48,482 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Optimized ensemble weights: {'xgboost': np.float64(0.497502569373073), 'catboost': np.float64(0.502497430626927)}
+2026-02-09 22:24:48,496 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble - AUC: 0.9211, AP: 0.5740
+2026-02-09 22:24:48,496 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training standalone adversarial validator
+2026-02-09 22:24:48,496 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:24:48,498 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:24:48,628 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validation AUC: 1.0000
+2026-02-09 22:24:48,629 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Evaluating models
+2026-02-09 22:24:48,653 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,666 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,676 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,685 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,695 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,705 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Evaluating drift detection performance
+2026-02-09 22:24:48,732 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Evaluating probability calibration
+2026-02-09 22:24:48,732 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - WARNING - Failed to compute reliability statistics: got an unexpected keyword argument 'normalize'
+2026-02-09 22:24:48,732 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - ERROR - Failed to compute calibration metrics: got an unexpected keyword argument 'normalize'
+2026-02-09 22:24:48,732 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Evaluating temporal robustness
+2026-02-09 22:24:48,732 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,758 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,780 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,802 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,824 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training Results:
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_drift_score: 0.999999
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_train_auc: 0.999994
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_val_auc: 0.999999
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_brier_score: 0.250000
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_ece: 1.000000
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_hl_chi2: 100.000000
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mce: 1.000000
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mean_accuracy: 0.051474
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mean_confidence: 0.500000
+2026-02-09 22:24:48,860 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_overconfidence: 0.000000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_reliability_correlation: 0.000000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_reliability_slope: 0.000000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_ap: 0.051684
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_auc: 0.500199
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_contribution_mean: 0.044469
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_contribution_std: 0.018333
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_auc: 0.500000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_f1: 0.666667
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_precision: 0.500000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_recall: 1.000000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_specificity: 0.000000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   ensemble_ap: 0.574001
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   ensemble_auc: 0.921105
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_0_ap: 0.055476
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_0_auc: 0.539234
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_1_ap: 0.046319
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_1_auc: 0.473512
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_2_ap: 0.053000
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_2_auc: 0.560737
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_3_ap: 0.046562
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_3_auc: 0.492188
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_4_ap: 0.067495
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_4_auc: 0.490849
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_ap_mean: 0.053770
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_ap_std: 0.007738
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_max: 0.560737
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_mean: 0.511304
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_min: 0.473512
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_std: 0.032972
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_stability_score: 0.967028
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_ap: 0.051135
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_auc: 0.495227
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_contribution_mean: 0.047880
+2026-02-09 22:24:48,861 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_contribution_std: 0.034077
+2026-02-09 22:24:49,153 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Metrics saved to models/models/training_metrics.json
+2026-02-09 22:24:49,153 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Saving models
+2026-02-09 22:24:49,172 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble model saved to models/models/drift_aware_ensemble.pkl
+2026-02-09 22:24:49,187 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble model saved to models/models/checkpoints/ensemble_checkpoint_20260209_222449.pkl
+2026-02-09 22:24:49,187 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Checkpoint saved: models/models/checkpoints/ensemble_checkpoint_20260209_222449.pkl
+2026-02-09 22:24:49,197 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Models saved to models/models
+2026-02-09 22:24:49,197 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training completed in 59.04 seconds
+2026-02-09 22:24:49,197 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Final ensemble AUC: 0.9211
+2026-02-09 22:24:49,207 - __main__ - INFO - Training completed successfully
+2026-02-09 22:24:49,207 - __main__ - INFO - Key Training Results:
+2026-02-09 22:24:49,207 - __main__ - INFO -   xgboost_auc: 0.495227
+2026-02-09 22:24:49,207 - __main__ - INFO -   xgboost_ap: 0.051135
+2026-02-09 22:24:49,207 - __main__ - INFO -   catboost_auc: 0.500199
+2026-02-09 22:24:49,207 - __main__ - INFO -   catboost_ap: 0.051684
+2026-02-09 22:24:49,207 - __main__ - INFO -   ensemble_auc: 0.921105
+2026-02-09 22:24:49,207 - __main__ - INFO -   ensemble_ap: 0.574001
+2026-02-09 22:24:49,207 - __main__ - INFO -   adversarial_train_auc: 0.999994
+2026-02-09 22:24:49,207 - __main__ - INFO -   adversarial_val_auc: 0.999999
+2026-02-09 22:24:49,207 - __main__ - INFO -   adversarial_drift_score: 0.999999
+2026-02-09 22:24:49,207 - __main__ - INFO -   drift_detection_recall: 1.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   drift_detection_precision: 0.500000
+2026-02-09 22:24:49,207 - __main__ - INFO -   drift_detection_specificity: 0.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   drift_detection_auc: 0.500000
+2026-02-09 22:24:49,207 - __main__ - INFO -   drift_detection_f1: 0.666667
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_ece: 1.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_mce: 1.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_brier_score: 0.250000
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_reliability_correlation: 0.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_reliability_slope: 0.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_hl_chi2: 100.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_mean_confidence: 0.500000
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_mean_accuracy: 0.051474
+2026-02-09 22:24:49,207 - __main__ - INFO -   calibration_overconfidence: 0.000000
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_0_auc: 0.539234
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_0_ap: 0.055476
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_1_auc: 0.473512
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_1_ap: 0.046319
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_2_auc: 0.560737
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_2_ap: 0.053000
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_3_auc: 0.492188
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_3_ap: 0.046562
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_4_auc: 0.490849
+2026-02-09 22:24:49,207 - __main__ - INFO -   period_4_ap: 0.067495
+2026-02-09 22:24:49,207 - __main__ - INFO -   temporal_auc_mean: 0.511304
+2026-02-09 22:24:49,207 - __main__ - INFO -   temporal_auc_std: 0.032972
+2026-02-09 22:24:49,207 - __main__ - INFO -   temporal_auc_min: 0.473512
+2026-02-09 22:24:49,207 - __main__ - INFO -   temporal_auc_max: 0.560737
+2026-02-09 22:24:49,207 - __main__ - INFO -   temporal_ap_mean: 0.053770
+2026-02-09 22:24:49,207 - __main__ - INFO -   temporal_ap_std: 0.007738
+2026-02-09 22:24:49,207 - __main__ - INFO -   temporal_stability_score: 0.967028
+2026-02-09 22:24:49,207 - __main__ - INFO -   xgboost_contribution_mean: 0.047880
+2026-02-09 22:24:49,207 - __main__ - INFO -   xgboost_contribution_std: 0.034077
+2026-02-09 22:24:49,207 - __main__ - INFO -   catboost_contribution_mean: 0.044469
+2026-02-09 22:24:49,207 - __main__ - INFO -   catboost_contribution_std: 0.018333
+2026-02-09 22:24:49,207 - __main__ - INFO -   training_time_seconds: 59.044869
+2026-02-09 22:24:49,207 - __main__ - INFO - Evaluating on test data
+2026-02-09 22:24:49,207 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:49,259 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Performing comprehensive evaluation
+2026-02-09 22:24:49,259 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - ERROR - Evaluation failed: DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:ProductCD: object, P_emaildomain: object, DeviceType: object, DeviceInfo: object
+2026-02-09 22:24:49,259 - __main__ - INFO - Test Evaluation Results:
+2026-02-09 22:24:49,259 - __main__ - INFO -   ✗ auroc: 0.0000 (target: 0.9400)
+2026-02-09 22:24:49,259 - __main__ - INFO -   ✗ auprc: 0.0000 (target: 0.6500)
+2026-02-09 22:24:49,259 - __main__ - INFO -   ✗ drift_detection_recall: 0.0000 (target: 0.8500)
+2026-02-09 22:24:49,259 - __main__ - INFO -   ✗ calibration_ece: 0.0000 (target: 0.0300)
+2026-02-09 22:24:49,259 - __main__ - INFO - Met 0/4 target metrics
+2026-02-09 22:24:49,259 - __main__ - WARNING - ⚠️  4 target metrics not met
+2026-02-09 22:24:49,260 - __main__ - INFO - Results saved to models/results/training_results.json
+2026-02-09 22:24:56,725 - temporal_drift_aware_fraud_detection_with_adversarial_validation.utils.config - INFO - Logging configuration applied
+2026-02-09 22:24:56,726 - __main__ - INFO - Starting temporal drift-aware fraud detection training
+2026-02-09 22:24:56,726 - __main__ - INFO - GPU available: True
+2026-02-09 22:24:56,726 - __main__ - INFO - Configuration: {'training': {'random_seed': 42, 'train_ratio': 0.8, 'val_ratio': 0.15, 'test_ratio': 0.05, 'n_drift_periods': 5, 'target_column': 'isFraud', 'ensemble_method': 'weighted_average', 'calibrate_probabilities': True, 'early_stopping_rounds': 50, 'n_trials_optuna': 100}, 'data': {'data_path': None, 'use_synthetic': True, 'time_column': 'TransactionDT', 'id_column': 'TransactionID', 'target_column': 'isFraud', 'feature_engineering': True, 'handle_missing': True, 'scale_features': True}, 'evaluation': {'target_metrics': {'auroc': 0.94, 'auprc': 0.65, 'drift_detection_recall': 0.85, 'calibration_ece': 0.03}, 'calibration_bins': 10, 'drift_threshold': 0.6, 'business_cost_fp': 1.0, 'business_cost_fn': 10.0, 'min_precision_at_recall_80': 0.5}, 'logging': {'level': 'INFO', 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s', 'log_to_file': True, 'log_file': 'logs/training.log'}, 'mlflow': {'enabled': True, 'experiment_name': 'drift_aware_fraud_detection', 'tracking_uri': None, 'artifact_location': None, 'tags': {'project': 'temporal-drift-aware-fraud-detection', 'model_type': 'ensemble', 'feature_type': 'tabular'}}, 'base_models': {'lightgbm': {'model_type': 'lightgbm', 'params': {'objective': 'binary', 'metric': 'auc', 'num_leaves': 31, 'learning_rate': 0.05, 'feature_fraction': 0.9, 'bagging_fraction': 0.8, 'bagging_freq': 5, 'n_estimators': 1000, 'verbose': -1, 'random_state': 42, 'device_type': 'auto'}}, 'xgboost': {'model_type': 'xgboost', 'params': {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 1000, 'subsample': 0.8, 'colsample_bytree': 0.9, 'random_state': 42, 'verbosity': 0, 'tree_method': 'auto'}}, 'catboost': {'model_type': 'catboost', 'params': {'iterations': 1000, 'learning_rate': 0.05, 'depth': 6, 'l2_leaf_reg': 3, 'random_seed': 42, 'verbose': False, 'task_type': 'GPU'}}}}
+2026-02-09 22:24:56,726 - __main__ - INFO - Output directory: models
+2026-02-09 22:24:56,726 - __main__ - INFO - Checkpoints directory: models/checkpoints
+2026-02-09 22:24:56,726 - __main__ - INFO - Models directory: models/models
+2026-02-09 22:24:56,726 - __main__ - INFO - Loading and preparing data
+2026-02-09 22:24:56,726 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - WARNING - IEEE-CIS data not found. Generating synthetic data for demonstration.
+2026-02-09 22:24:56,726 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generating synthetic IEEE-CIS-like fraud detection data
+2026-02-09 22:24:56,738 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Generated 10000 training and 5000 test samples
+2026-02-09 22:24:56,738 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.loader - INFO - Fraud rate - Train: 0.051, Test: 0.061
+2026-02-09 22:24:56,738 - __main__ - INFO - Data loaded - Train: 10000, Test: 5000
+2026-02-09 22:24:56,738 - __main__ - INFO - Features: {'categorical_columns': ['ProductCD', 'P_emaildomain', 'DeviceType', 'DeviceInfo'], 'numerical_columns': ['TransactionDT', 'TransactionAmt', 'card1', 'card2', 'card3', 'dist1', 'dist2', 'hour', 'day_of_week', 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'V1', 'V2', 'V3', 'V4'], 'n_samples': 10000, 'n_features': 24, 'fraud_rate': np.float64(0.0514)}
+2026-02-09 22:24:56,738 - __main__ - INFO - Initializing drift-aware trainer
+2026-02-09 22:24:57,077 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - MLflow experiment: drift_aware_fraud_detection
+2026-02-09 22:24:57,077 - __main__ - INFO - Starting model training
+2026-02-09 22:24:57,077 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Starting drift-aware fraud detection training
+2026-02-09 22:24:57,116 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Preparing and preprocessing data
+2026-02-09 22:24:57,122 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Stratified temporal split - Train: 7999, Test: 2001
+2026-02-09 22:24:57,122 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Train fraud rate: 0.051, Test fraud rate: 0.051
+2026-02-09 22:24:57,124 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Created 5 drift periods with sizes: [1599, 1599, 1599, 1599, 1603]
+2026-02-09 22:24:57,124 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Fitting and transforming training data
+2026-02-09 22:24:57,164 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Feature engineering complete. Shape: (7999, 39)
+2026-02-09 22:24:57,164 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:57,176 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Data prepared - Train: (7999, 38), Validation: (2001, 38)
+2026-02-09 22:24:57,176 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Train fraud rate: 0.0514, Val fraud rate: 0.0515
+2026-02-09 22:24:57,176 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training models
+2026-02-09 22:24:57,176 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:57,186 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:57,196 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:57,206 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:57,217 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:24:57,227 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training ensemble with 3 base models
+2026-02-09 22:24:57,227 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training lightgbm
+2026-02-09 22:24:57,236 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - ERROR - Failed to train lightgbm: Unknown device type auto
+2026-02-09 22:24:57,237 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training xgboost
+2026-02-09 22:24:58,726 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - xgboost - AUC: 0.4952, AP: 0.0511
+2026-02-09 22:24:58,726 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training catboost
+2026-02-09 22:25:13,731 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - catboost - AUC: 0.5002, AP: 0.0517
+2026-02-09 22:25:13,731 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Calibrating model probabilities
+2026-02-09 22:25:55,361 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator
+2026-02-09 22:25:55,362 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:25:55,364 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:25:55,530 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validation AUC: 1.0000
+2026-02-09 22:25:55,530 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validator trained. Drift AUC: 1.0000
+2026-02-09 22:25:55,530 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Optimized ensemble weights: {'xgboost': np.float64(0.497502569373073), 'catboost': np.float64(0.502497430626927)}
+2026-02-09 22:25:55,546 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble - AUC: 0.9211, AP: 0.5740
+2026-02-09 22:25:55,546 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training standalone adversarial validator
+2026-02-09 22:25:55,546 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Training adversarial validator with lightgbm
+2026-02-09 22:25:55,548 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - ✓ CUDA available: NVIDIA GeForce RTX 4090
+2026-02-09 22:25:55,685 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Adversarial validation AUC: 1.0000
+2026-02-09 22:25:55,685 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Evaluating models
+2026-02-09 22:25:55,710 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,721 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,731 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,741 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,750 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,760 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Evaluating drift detection performance
+2026-02-09 22:25:55,793 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Evaluating probability calibration
+2026-02-09 22:25:55,794 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - WARNING - Failed to compute reliability statistics: got an unexpected keyword argument 'normalize'
+2026-02-09 22:25:55,794 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - ERROR - Failed to compute calibration metrics: got an unexpected keyword argument 'normalize'
+2026-02-09 22:25:55,794 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Evaluating temporal robustness
+2026-02-09 22:25:55,794 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,821 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,845 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,873 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,895 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training Results:
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_drift_score: 0.999999
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_train_auc: 0.999994
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   adversarial_val_auc: 0.999999
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_brier_score: 0.250000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_ece: 1.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_hl_chi2: 100.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mce: 1.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mean_accuracy: 0.051474
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_mean_confidence: 0.500000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_overconfidence: 0.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_reliability_correlation: 0.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   calibration_reliability_slope: 0.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_ap: 0.051684
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_auc: 0.500199
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_contribution_mean: 0.044469
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   catboost_contribution_std: 0.018333
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_auc: 0.500000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_f1: 0.666667
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_precision: 0.500000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_recall: 1.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   drift_detection_specificity: 0.000000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   ensemble_ap: 0.574001
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   ensemble_auc: 0.921105
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_0_ap: 0.055476
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_0_auc: 0.539234
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_1_ap: 0.046319
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_1_auc: 0.473512
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_2_ap: 0.053000
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_2_auc: 0.560737
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_3_ap: 0.046562
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_3_auc: 0.492188
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_4_ap: 0.067495
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   period_4_auc: 0.490849
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_ap_mean: 0.053770
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_ap_std: 0.007738
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_max: 0.560737
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_mean: 0.511304
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_min: 0.473512
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_auc_std: 0.032972
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   temporal_stability_score: 0.967028
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_ap: 0.051135
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_auc: 0.495227
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_contribution_mean: 0.047880
+2026-02-09 22:25:55,930 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO -   xgboost_contribution_std: 0.034077
+2026-02-09 22:25:56,221 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Metrics saved to models/models/training_metrics.json
+2026-02-09 22:25:56,221 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Saving models
+2026-02-09 22:25:56,238 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble model saved to models/models/drift_aware_ensemble.pkl
+2026-02-09 22:25:56,252 - temporal_drift_aware_fraud_detection_with_adversarial_validation.models.model - INFO - Ensemble model saved to models/models/checkpoints/ensemble_checkpoint_20260209_222556.pkl
+2026-02-09 22:25:56,252 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Checkpoint saved: models/models/checkpoints/ensemble_checkpoint_20260209_222556.pkl
+2026-02-09 22:25:56,266 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Models saved to models/models
+2026-02-09 22:25:56,266 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Training completed in 59.19 seconds
+2026-02-09 22:25:56,266 - temporal_drift_aware_fraud_detection_with_adversarial_validation.training.trainer - INFO - Final ensemble AUC: 0.9211
+2026-02-09 22:25:56,274 - __main__ - INFO - Training completed successfully
+2026-02-09 22:25:56,274 - __main__ - INFO - Key Training Results:
+2026-02-09 22:25:56,274 - __main__ - INFO -   xgboost_auc: 0.495227
+2026-02-09 22:25:56,274 - __main__ - INFO -   xgboost_ap: 0.051135
+2026-02-09 22:25:56,274 - __main__ - INFO -   catboost_auc: 0.500199
+2026-02-09 22:25:56,274 - __main__ - INFO -   catboost_ap: 0.051684
+2026-02-09 22:25:56,274 - __main__ - INFO -   ensemble_auc: 0.921105
+2026-02-09 22:25:56,274 - __main__ - INFO -   ensemble_ap: 0.574001
+2026-02-09 22:25:56,274 - __main__ - INFO -   adversarial_train_auc: 0.999994
+2026-02-09 22:25:56,274 - __main__ - INFO -   adversarial_val_auc: 0.999999
+2026-02-09 22:25:56,274 - __main__ - INFO -   adversarial_drift_score: 0.999999
+2026-02-09 22:25:56,274 - __main__ - INFO -   drift_detection_recall: 1.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   drift_detection_precision: 0.500000
+2026-02-09 22:25:56,274 - __main__ - INFO -   drift_detection_specificity: 0.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   drift_detection_auc: 0.500000
+2026-02-09 22:25:56,274 - __main__ - INFO -   drift_detection_f1: 0.666667
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_ece: 1.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_mce: 1.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_brier_score: 0.250000
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_reliability_correlation: 0.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_reliability_slope: 0.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_hl_chi2: 100.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_mean_confidence: 0.500000
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_mean_accuracy: 0.051474
+2026-02-09 22:25:56,274 - __main__ - INFO -   calibration_overconfidence: 0.000000
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_0_auc: 0.539234
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_0_ap: 0.055476
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_1_auc: 0.473512
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_1_ap: 0.046319
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_2_auc: 0.560737
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_2_ap: 0.053000
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_3_auc: 0.492188
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_3_ap: 0.046562
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_4_auc: 0.490849
+2026-02-09 22:25:56,274 - __main__ - INFO -   period_4_ap: 0.067495
+2026-02-09 22:25:56,274 - __main__ - INFO -   temporal_auc_mean: 0.511304
+2026-02-09 22:25:56,274 - __main__ - INFO -   temporal_auc_std: 0.032972
+2026-02-09 22:25:56,274 - __main__ - INFO -   temporal_auc_min: 0.473512
+2026-02-09 22:25:56,274 - __main__ - INFO -   temporal_auc_max: 0.560737
+2026-02-09 22:25:56,274 - __main__ - INFO -   temporal_ap_mean: 0.053770
+2026-02-09 22:25:56,274 - __main__ - INFO -   temporal_ap_std: 0.007738
+2026-02-09 22:25:56,274 - __main__ - INFO -   temporal_stability_score: 0.967028
+2026-02-09 22:25:56,274 - __main__ - INFO -   xgboost_contribution_mean: 0.047880
+2026-02-09 22:25:56,274 - __main__ - INFO -   xgboost_contribution_std: 0.034077
+2026-02-09 22:25:56,274 - __main__ - INFO -   catboost_contribution_mean: 0.044469
+2026-02-09 22:25:56,274 - __main__ - INFO -   catboost_contribution_std: 0.018333
+2026-02-09 22:25:56,274 - __main__ - INFO -   training_time_seconds: 59.188933
+2026-02-09 22:25:56,274 - __main__ - INFO - Evaluating on test data
+2026-02-09 22:25:56,274 - temporal_drift_aware_fraud_detection_with_adversarial_validation.data.preprocessing - INFO - Transforming new data
+2026-02-09 22:25:56,329 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - INFO - Performing comprehensive evaluation
+2026-02-09 22:25:56,329 - temporal_drift_aware_fraud_detection_with_adversarial_validation.evaluation.metrics - ERROR - Evaluation failed: DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:ProductCD: object, P_emaildomain: object, DeviceType: object, DeviceInfo: object
+2026-02-09 22:25:56,329 - __main__ - INFO - Test Evaluation Results:
+2026-02-09 22:25:56,329 - __main__ - INFO -   ✗ auroc: 0.0000 (target: 0.9400)
+2026-02-09 22:25:56,329 - __main__ - INFO -   ✗ auprc: 0.0000 (target: 0.6500)
+2026-02-09 22:25:56,329 - __main__ - INFO -   ✗ drift_detection_recall: 0.0000 (target: 0.8500)
+2026-02-09 22:25:56,329 - __main__ - INFO -   ✗ calibration_ece: 0.0000 (target: 0.0300)
+2026-02-09 22:25:56,329 - __main__ - INFO - Met 0/4 target metrics
+2026-02-09 22:25:56,329 - __main__ - WARNING - ⚠️  4 target metrics not met
+2026-02-09 22:25:56,330 - __main__ - INFO - Results saved to models/results/training_results.json

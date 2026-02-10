@@ -1,0 +1,153 @@
+{
+  "xgboost_auc": 0.4952274750120209,
+  "xgboost_ap": 0.051134558847101094,
+  "catboost_auc": 0.5001994946136454,
+  "catboost_ap": 0.05168366771282105,
+  "ensemble_auc": 0.9211049955497356,
+  "ensemble_ap": 0.5740005513317665,
+  "adversarial_train_auc": 0.9999937010832964,
+  "adversarial_val_auc": 0.999999217581262,
+  "adversarial_drift_score": 0.999999217581262,
+  "drift_detection_recall": 1.0,
+  "drift_detection_precision": 0.5,
+  "drift_detection_specificity": 0.0,
+  "drift_detection_auc": 0.5,
+  "drift_detection_f1": 0.6666666666666666,
+  "calibration_ece": 1.0,
+  "calibration_mce": 1.0,
+  "calibration_brier_score": 0.25,
+  "calibration_reliability_correlation": 0.0,
+  "calibration_reliability_slope": 0.0,
+  "calibration_hl_chi2": 100.0,
+  "calibration_mean_confidence": 0.5,
+  "calibration_mean_accuracy": 0.05147426286856572,
+  "calibration_overconfidence": 0.0,
+  "period_0_auc": 0.5392340904824479,
+  "period_0_ap": 0.0554755494915597,
+  "period_1_auc": 0.4735118596065342,
+  "period_1_ap": 0.04631887583423774,
+  "period_2_auc": 0.5607368977934024,
+  "period_2_ap": 0.052999790306107,
+  "period_3_auc": 0.49218807610058257,
+  "period_3_ap": 0.04656231158408426,
+  "period_4_auc": 0.4908491267186919,
+  "period_4_ap": 0.06749496996380583,
+  "temporal_auc_mean": 0.5113040101403318,
+  "temporal_auc_std": 0.03297201116587309,
+  "temporal_auc_min": 0.4735118596065342,
+  "temporal_auc_max": 0.5607368977934024,
+  "temporal_ap_mean": 0.0537702994359589,
+  "temporal_ap_std": 0.007737531204904072,
+  "temporal_stability_score": 0.9670279888341269,
+  "xgboost_contribution_mean": 0.04788004198750317,
+  "xgboost_contribution_std": 0.03407719836485392,
+  "catboost_contribution_mean": 0.04446949860385097,
+  "catboost_contribution_std": 0.018333304229822253,
+  "training_time_seconds": 59.18893265724182,
+  "test_evaluation_error": "DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:ProductCD: object, P_emaildomain: object, DeviceType: object, DeviceInfo: object",
+  "target_metrics_met": {
+    "auroc": false,
+    "auprc": false,
+    "drift_detection_recall": false,
+    "calibration_ece": false
+  },
+  "config": {
+    "training": {
+      "random_seed": 42,
+      "train_ratio": 0.8,
+      "val_ratio": 0.15,
+      "test_ratio": 0.05,
+      "n_drift_periods": 5,
+      "target_column": "isFraud",
+      "ensemble_method": "weighted_average",
+      "calibrate_probabilities": true,
+      "early_stopping_rounds": 50,
+      "n_trials_optuna": 100
+    },
+    "data": {
+      "data_path": null,
+      "use_synthetic": true,
+      "time_column": "TransactionDT",
+      "id_column": "TransactionID",
+      "target_column": "isFraud",
+      "feature_engineering": true,
+      "handle_missing": true,
+      "scale_features": true
+    },
+    "evaluation": {
+      "target_metrics": {
+        "auroc": 0.94,
+        "auprc": 0.65,
+        "drift_detection_recall": 0.85,
+        "calibration_ece": 0.03
+      },
+      "calibration_bins": 10,
+      "drift_threshold": 0.6,
+      "business_cost_fp": 1.0,
+      "business_cost_fn": 10.0,
+      "min_precision_at_recall_80": 0.5
+    },
+    "logging": {
+      "level": "INFO",
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+      "log_to_file": true,
+      "log_file": "logs/training.log"
+    },
+    "mlflow": {
+      "enabled": true,
+      "experiment_name": "drift_aware_fraud_detection",
+      "tracking_uri": null,
+      "artifact_location": null,
+      "tags": {
+        "project": "temporal-drift-aware-fraud-detection",
+        "model_type": "ensemble",
+        "feature_type": "tabular"
+      }
+    },
+    "base_models": {
+      "lightgbm": {
+        "model_type": "lightgbm",
+        "params": {
+          "objective": "binary",
+          "metric": "auc",
+          "num_leaves": 31,
+          "learning_rate": 0.05,
+          "feature_fraction": 0.9,
+          "bagging_fraction": 0.8,
+          "bagging_freq": 5,
+          "n_estimators": 1000,
+          "verbose": -1,
+          "random_state": 42,
+          "device_type": "auto"
+        }
+      },
+      "xgboost": {
+        "model_type": "xgboost",
+        "params": {
+          "objective": "binary:logistic",
+          "eval_metric": "auc",
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "n_estimators": 1000,
+          "subsample": 0.8,
+          "colsample_bytree": 0.9,
+          "random_state": 42,
+          "verbosity": 0,
+          "tree_method": "auto"
+        }
+      },
+      "catboost": {
+        "model_type": "catboost",
+        "params": {
+          "iterations": 1000,
+          "learning_rate": 0.05,
+          "depth": 6,
+          "l2_leaf_reg": 3,
+          "random_seed": 42,
+          "verbose": false,
+          "task_type": "GPU"
+        }
+      }
+    }
+  }
+}

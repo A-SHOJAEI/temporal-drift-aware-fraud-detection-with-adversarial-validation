@@ -1,0 +1,98 @@
+# Default configuration for Temporal Drift-Aware Fraud Detection
+
+# Training parameters
+training:
+  random_seed: 42
+  train_ratio: 0.8
+  val_ratio: 0.15
+  test_ratio: 0.05
+  n_drift_periods: 5
+  target_column: "isFraud"
+  ensemble_method: "weighted_average"
+  calibrate_probabilities: true
+  early_stopping_rounds: 50
+  n_trials_optuna: 100
+
+# Data configuration
+data:
+  data_path: null  # Set to IEEE-CIS data path if available
+  use_synthetic: true
+  time_column: "TransactionDT"
+  id_column: "TransactionID"
+  target_column: "isFraud"
+  feature_engineering: true
+  handle_missing: true
+  scale_features: true
+
+# Evaluation configuration
+evaluation:
+  target_metrics:
+    auroc: 0.94
+    auprc: 0.65
+    drift_detection_recall: 0.85
+    calibration_ece: 0.03
+  calibration_bins: 10
+  drift_threshold: 0.6
+  business_cost_fp: 1.0
+  business_cost_fn: 10.0
+  min_precision_at_recall_80: 0.5
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_to_file: true
+  log_file: "logs/training.log"
+
+# MLflow configuration
+mlflow:
+  enabled: true
+  experiment_name: "drift_aware_fraud_detection"
+  tracking_uri: null
+  artifact_location: null
+  tags:
+    project: "temporal-drift-aware-fraud-detection"
+    model_type: "ensemble"
+    feature_type: "tabular"
+
+# Base models configuration
+base_models:
+  lightgbm:
+    model_type: "lightgbm"
+    params:
+      objective: "binary"
+      metric: "auc"
+      num_leaves: 31
+      learning_rate: 0.05
+      feature_fraction: 0.9
+      bagging_fraction: 0.8
+      bagging_freq: 5
+      n_estimators: 1000
+      verbose: -1
+      random_state: 42
+      device_type: "auto"  # Will use GPU if available
+
+  xgboost:
+    model_type: "xgboost"
+    params:
+      objective: "binary:logistic"
+      eval_metric: "auc"
+      max_depth: 6
+      learning_rate: 0.05
+      n_estimators: 1000
+      subsample: 0.8
+      colsample_bytree: 0.9
+      random_state: 42
+      verbosity: 0
+      tree_method: "auto"  # Will use GPU if available
+
+  catboost:
+    model_type: "catboost"
+    params:
+      iterations: 1000
+      learning_rate: 0.05
+      depth: 6
+      l2_leaf_reg: 3
+      random_seed: 42
+      verbose: false
+      task_type: "GPU"  # Will fallback to CPU if GPU not available
