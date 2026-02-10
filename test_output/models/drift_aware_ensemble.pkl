@@ -1,0 +1,3 @@
+# Mock model file for testing
+# Generated: 2026-02-09 22:05:35.362035
+# Test mode: True

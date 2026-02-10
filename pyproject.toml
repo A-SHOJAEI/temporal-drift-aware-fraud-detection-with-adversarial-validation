@@ -1,0 +1,142 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "temporal-drift-aware-fraud-detection-with-adversarial-validation"
+version = "0.1.0"
+description = "Builds a fraud detection system on IEEE-CIS data that explicitly models temporal distribution shift by training adversarial validators to detect when the production distribution diverges from training data"
+authors = [
+    {name = "Alireza Shojaei", email = "noreply@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["fraud detection", "drift detection", "adversarial validation", "ensemble learning", "temporal analysis"]
+
+dependencies = [
+    "lightgbm>=4.0.0",
+    "catboost>=1.2.0",
+    "xgboost>=1.7.0",
+    "scikit-learn>=1.3.0",
+    "optuna>=3.3.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+    "mlflow>=2.5.0",
+    "tqdm>=4.65.0",
+    "joblib>=1.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+]
+notebooks = [
+    "jupyter>=1.0.0",
+    "ipykernel>=6.25.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/alirezashojaei/temporal-drift-aware-fraud-detection-with-adversarial-validation"
+Repository = "https://github.com/alirezashojaei/temporal-drift-aware-fraud-detection-with-adversarial-validation"
+Documentation = "https://github.com/alirezashojaei/temporal-drift-aware-fraud-detection-with-adversarial-validation#readme"
+Issues = "https://github.com/alirezashojaei/temporal-drift-aware-fraud-detection-with-adversarial-validation/issues"
+
+[project.scripts]
+train-fraud-detector = "temporal_drift_aware_fraud_detection_with_adversarial_validation.scripts.train:main"
+evaluate-fraud-detector = "temporal_drift_aware_fraud_detection_with_adversarial_validation.scripts.evaluate:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"temporal_drift_aware_fraud_detection_with_adversarial_validation" = ["configs/*.yaml"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--verbose --tb=short --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["src/temporal_drift_aware_fraud_detection_with_adversarial_validation"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/conftest.py",
+    "*/setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "*.egg-info",
+    ".venv",
+    ".tox",
+]
