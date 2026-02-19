@@ -230,11 +230,12 @@ def main():
         # Comprehensive evaluation
         evaluator = ComprehensiveEvaluator()
 
-        # Get features for evaluation
-        feature_cols = [col for col in test_data.columns
+        # Preprocess test data through the feature engineer to encode categoricals
+        test_processed = trainer.feature_engineer.transform(test_data)
+        feature_cols = [col for col in test_processed.columns
                        if col not in ['isFraud', 'TransactionID']]
-        test_features = test_data[feature_cols]
-        test_targets = test_data['isFraud']
+        test_features = test_processed[feature_cols]
+        test_targets = test_processed['isFraud']
 
         test_results = evaluator.full_evaluation(
             model=trainer.ensemble,

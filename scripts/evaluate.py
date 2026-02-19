@@ -153,11 +153,12 @@ def evaluate_standard_metrics(trainer: DriftAwareTrainer,
     # Make predictions
     test_probs, test_preds = trainer.predict(test_data)
 
-    # Get feature columns
-    feature_cols = [col for col in test_data.columns
+    # Preprocess test data through the feature engineer to encode categoricals
+    test_processed = trainer.feature_engineer.transform(test_data)
+    feature_cols = [col for col in test_processed.columns
                    if col not in ['isFraud', 'TransactionID']]
-    test_features = test_data[feature_cols]
-    test_targets = test_data['isFraud']
+    test_features = test_processed[feature_cols]
+    test_targets = test_processed['isFraud']
 
     # Use comprehensive evaluator
     evaluator = ComprehensiveEvaluator()
@@ -203,15 +204,18 @@ def evaluate_drift_detection(trainer: DriftAwareTrainer,
             test_data, n_periods=config.training.n_drift_periods
         )
 
+        # Preprocess drift periods through the feature engineer to encode categoricals
+        processed_drift_periods = [trainer.feature_engineer.transform(period) for period in drift_periods]
+
         # Evaluate drift detection
         drift_evaluator = DriftDetectionMetrics(random_seed=config.training.random_seed)
 
         # Use first period as reference
-        reference_period = drift_periods[0]
+        reference_period = processed_drift_periods[0]
 
         drift_results = drift_evaluator.evaluate_drift_detection(
             ensemble=trainer.ensemble,
-            drift_periods=drift_periods,
+            drift_periods=processed_drift_periods,
             reference_data=reference_period
         )
 
@@ -225,11 +229,13 @@ def evaluate_drift_detection(trainer: DriftAwareTrainer,
             if 'isFraud' not in period.columns:
                 continue
 
-            feature_cols = [col for col in period.columns
+            # Preprocess period data through the feature engineer to encode categoricals
+            period_processed = trainer.feature_engineer.transform(period)
+            feature_cols = [col for col in period_processed.columns
                            if col not in ['isFraud', 'TransactionID']]
 
-            period_features = period[feature_cols]
-            period_targets = period['isFraud']
+            period_features = period_processed[feature_cols]
+            period_targets = period_processed['isFraud']
 
             if len(period_targets.unique()) > 1:  # Need both classes
                 try:

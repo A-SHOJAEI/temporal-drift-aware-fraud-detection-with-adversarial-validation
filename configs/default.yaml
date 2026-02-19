@@ -70,7 +70,7 @@ base_models:
       n_estimators: 1000
       verbose: -1
       random_state: 42
-      device_type: "auto"  # Will use GPU if available
+      device_type: "cpu"
 
   xgboost:
     model_type: "xgboost"
@@ -95,4 +95,4 @@ base_models:
       l2_leaf_reg: 3
       random_seed: 42
       verbose: false
-      task_type: "GPU"  # Will fallback to CPU if GPU not available
+      task_type: "CPU"
