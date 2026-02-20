@@ -1,0 +1,67 @@
+{
+  "experiment": "temporal_drift_aware_fraud_detection",
+  "dataset": "synthetic_ieee_cis",
+  "data": {
+    "train_samples": 10000,
+    "test_samples": 5000,
+    "fraud_rate_train": 0.051,
+    "fraud_rate_test": 0.061,
+    "n_drift_periods": 5
+  },
+  "base_models": {
+    "lightgbm": {
+      "auc": 0.5528,
+      "ap": 0.0628
+    },
+    "xgboost": {
+      "auc": 0.4952,
+      "ap": 0.0511
+    },
+    "catboost": {
+      "auc": 0.4858,
+      "ap": 0.0572
+    }
+  },
+  "ensemble": {
+    "validation_auc": 0.9376,
+    "validation_ap": 0.6535,
+    "test_auc": 0.5191,
+    "test_ap": 0.0659,
+    "weights": {
+      "lightgbm": 0.3604,
+      "xgboost": 0.3229,
+      "catboost": 0.3167
+    }
+  },
+  "adversarial_validation": {
+    "train_auc": 0.9999,
+    "val_auc": 1.0000,
+    "drift_score": 1.0000
+  },
+  "drift_detection": {
+    "recall": 1.0,
+    "precision": 0.5,
+    "specificity": 0.0,
+    "auc": 0.5,
+    "f1": 0.6667
+  },
+  "calibration": {
+    "ece": 1.0,
+    "mce": 1.0,
+    "brier_score": 0.25,
+    "mean_confidence": 0.5,
+    "mean_accuracy": 0.0515
+  },
+  "temporal_robustness": {
+    "period_0": {"auc": 0.7051, "ap": 0.1020},
+    "period_1": {"auc": 0.6560, "ap": 0.0848},
+    "period_2": {"auc": 0.6520, "ap": 0.0884},
+    "period_3": {"auc": 0.6180, "ap": 0.0614},
+    "period_4": {"auc": 0.7469, "ap": 0.3532},
+    "mean_auc": 0.6756,
+    "std_auc": 0.0452,
+    "stability_score": 0.9548
+  },
+  "training_time_seconds": 851.70,
+  "status": "completed"
+}
