@@ -103,6 +103,9 @@ catboost_info/
 test_output/
 mlflow.db
 
+# Training logs
+training_output.log
+
 # IDEs
 .vscode/
 .idea/
